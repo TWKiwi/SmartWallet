@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="kiwi.smartwallet" >
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".LogoActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login" >
+        </activity>
+        <activity
+            android:name=".MenuActivity"
+            android:label="@string/title_activity_menu" >
+        </activity>
+        <activity
+            android:name=".ChargeGroupActivity"
+            android:label="@string/title_activity_charge_group" >
+        </activity>
+        <activity
+            android:name=".ChargeActivity"
+            android:label="@string/title_activity_charge" >
+        </activity>
+        <activity
+            android:name=".InCameraActivity"
+            android:label="@string/title_activity_in_camera" >
+        </activity>
+        <activity
+            android:name=".ViewPagerChargeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_view_pager_charge"
+            android:theme="@style/Theme.AppCompat" >
+        </activity>
+        <activity
+            android:name=".CalenderActivity"
+            android:label="@string/title_activity_calender" >
+        </activity>
+    </application>
+
+</manifest>
