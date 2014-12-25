@@ -83,11 +83,11 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 
             storageDir = mAlbumStorageDirFactory.getAlbumStorageDir(getAlbumName());
-            storageDir.toString();
+
             if (storageDir != null) {//如果storageDir有值
                 if (! storageDir.mkdirs()) {//如果尚無storageDir目錄
                     if (! storageDir.exists()){
-                        Log.d("storageDir",storageDir.toString());
+
                         Log.d("CameraSample", "未能創建目錄");
 
                         return null;
@@ -239,7 +239,7 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_pager_charge);
 
-        mImageView = (ImageView) findViewById(R.id.imageView3);
+
         mImageBitmap = null;
 
         setTitle("記帳功能");
@@ -310,6 +310,7 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
         LayoutInflater inflater=getLayoutInflater();
         view1=inflater.inflate(R.layout.activity_charge, null);
         view2=inflater.inflate(R.layout.activity_in_camera, null);
+        mImageView = (ImageView)view2.findViewById(R.id.imageView3); // 從 view2 裡找 imageView3
         view3=inflater.inflate(R.layout.activity_test, null);
         views.add(view1);
         views.add(view2);
@@ -372,12 +373,14 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object)   {
+            Log.d("ViewPagerChargeActivity", "Remove view "+ position);
             container.removeView(mListViews.get(position));
         }
 
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
+            Log.d("ViewPagerChargeActivity", "Init view "+ position);
             container.addView(mListViews.get(position), 0);
             return mListViews.get(position);
         }
