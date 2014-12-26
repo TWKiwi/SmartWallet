@@ -1,31 +1,19 @@
 package kiwi.smartwallet;
 
+
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+
 
 
 public class ChargeActivity extends ActionBarActivity {
 
-    private Button cameraBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_charge);
-/*
-        cameraBtn = (Button)findViewById(R.id.button3);
-
-        cameraBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ChargeActivity.this, InCaneraActivity.class);
-                startActivity(intent);
-            }
-        });*/
-
-
     }
 
 

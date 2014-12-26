@@ -2,6 +2,7 @@ package kiwi.smartwallet;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -11,7 +12,8 @@ public class The_Date_Expenses extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_the__date__expenses);
+        setContentView(R.layout.activity_the_date_expenses);
+        Log.d("CALENDAR_DATE",ViewPagerChargeActivity.CALENDAR_DATE);
     }
 
 

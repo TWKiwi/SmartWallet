@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,8 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
     private static final String BITMAP_STORAGE_KEY = "viewbitmap";
     private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
     private ImageView mImageView;
+    private CalendarView calenderView;
+    public static String CALENDAR_DATE;
     private Bitmap mImageBitmap;
 
     private static final String VIDEO_STORAGE_KEY = "viewvideo";
@@ -239,7 +242,8 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
         InitImageView();
         InitTextView();
         InitViewPager();
-        //嘗試在一個空對象引用調用虛擬方法無效android.widget.Button.setOnClickListener （ android.view.View $ OnClickListener ）
+
+//======================拍照部門=========================//
         Button cameraBtn = (Button)this.view2.findViewById(R.id.button3);
         setBtnListenerOrDisable( cameraBtn, mTakePicSOnClickListener, MediaStore.ACTION_IMAGE_CAPTURE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
@@ -247,6 +251,20 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
         } else {
             mAlbumStorageDirFactory = new BaseAlbumDirFactory();
         }
+//======================月曆部門========================//
+
+        calenderView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+                Toast.makeText(getApplicationContext(), ""+dayOfMonth, Toast.LENGTH_LONG).show();
+                CALENDAR_DATE = Integer.toString(year) + Integer.toString(month + 1) + Integer.toString(dayOfMonth);
+                Intent intent = new Intent(ViewPagerChargeActivity.this,The_Date_Expenses.class);
+                startActivity(intent);
+            }
+        });
+
+//============================================================//
+
     }
 
     public static boolean isIntentAvailable(Context context, String action) {
@@ -291,6 +309,7 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
         views=new ArrayList<View>();
         LayoutInflater inflater=getLayoutInflater();
         view1=inflater.inflate(R.layout.activity_charge, null);
+        calenderView = (CalendarView)view1.findViewById(R.id.calendarView);
         /*inflate有填充的意思*/
         /*把activity_charge的layout布局給view1*/
         view2=inflater.inflate(R.layout.activity_in_camera, null);
