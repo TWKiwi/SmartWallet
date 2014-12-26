@@ -19,10 +19,11 @@
             android:layout_weight="1">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="115dp"
+                android:layout_height="115dp"
                 android:id="@+id/imageView3"
-                android:background="#ffcc"/>
+                android:background="#ffcc"
+                android:scaleType="centerCrop"/>
 
         </TableRow>
 
@@ -49,7 +50,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="儲存"
+                android:text="ctBigPicBtn"
                 android:id="@+id/button3" />
         </TableRow>
 

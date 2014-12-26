@@ -15,5 +15,6 @@
     <string name="title_activity_calender">CalenderActivity</string>
     <string name="cannot">Cannot</string>
     <string name="album_name">SmartWalletPic</string>
+    <string name="title_activity_the__date__expenses">The_Date_Expenses</string>
 
 </resources>

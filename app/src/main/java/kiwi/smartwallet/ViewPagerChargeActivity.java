@@ -61,7 +61,6 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
 
     private static final String VIDEO_STORAGE_KEY = "viewvideo";
     private static final String VIDEOVIEW_VISIBILITY_STORAGE_KEY = "videoviewvisibility";
-    private VideoView mVideoView;
     private Uri mVideoUri;
 
     private String mCurrentPhotoPath;
@@ -71,19 +70,15 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
 
     private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
-    /* 相冊此應用程序 */
+//==============取得名字=============//
     private String getAlbumName() {
         return getString(R.string.album_name);
     }
-
-
+//==============給予資料夾路徑及判斷是否已存在此資料夾，若不存在則建立=============//
     private File getAlbumDir() {
         File storageDir = null;
-
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-
             storageDir = mAlbumStorageDirFactory.getAlbumStorageDir(getAlbumName());
-
             if (storageDir != null) {//如果storageDir有值
                 if (! storageDir.mkdirs()) {//如果尚無storageDir目錄
                     if (! storageDir.exists()){
@@ -94,40 +89,35 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
                     }
                 }
             }
-
         } else {
             Log.v(getString(R.string.app_name), "外部存儲設備未安裝讀/寫。");
         }
-
         return storageDir;//回傳儲存文件
     }
-
-
-    //產生圖片的(日期)檔名，回傳檔名
+//============產生圖片的(日期)檔名，回傳檔名==================//
     private File createImageFile() throws IOException {
-        // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+        /*照片檔名會等於IMG_yyyyMMdd_HHmmss_*/
         File albumF = getAlbumDir();
         File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);//createTempFile(創一個空文件(前綴，後綴，指定目錄路徑))
         return imageF;
     }
 
     private File setUpPhotoFile() throws IOException {
-
         File f = createImageFile();
+        /*調用 createImageFile()方法，建檔*/
         mCurrentPhotoPath = f.getAbsolutePath();
-
+        /*getPath()得到的是構造file的時候的路徑。
+          getAbsolutePath()得到的是全路徑
+          如果構造的時候就是全路徑那直接返回全路徑
+          如果構造的時候試相對路徑，返回當前目錄的路徑+構造file時候的路徑
+          http://www.blogjava.net/dreamstone/archive/2007/08/08/134968.html*/
         return f;
     }
-
-
+//=======
     private void setPic() {
-
-		/* There isn't enough memory to open up more than a couple camera photos */
-		/* So pre-scale the target bitmap into which the file is decoded */
-
-		/* 得到的ImageView的大小 */
+        /* 得到的ImageView的大小 */
         int targetW = mImageView.getWidth();
         int targetH = mImageView.getHeight();
 
@@ -135,27 +125,42 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        /*在通過BitmapFactory.decodeFile(String path)方法將圖片轉成Bitmap時，遇
+        到大一些的圖片，我們經常會遇到OOM(Out Of Memory)的問題。如果我們把它設為true
+        ，那麼BitmapFactory.decodeFile(String path, Options opt)並不會真的返
+        回一個Bitmap給你，它僅僅會把它的寬，高取回來給你，這樣就不會佔用太多的記憶體，也
+        就不會那麼頻繁的發生OOM了。*/
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
+        /*轉成轉成Bitmap(點陣圖)時，的長寬*/
 
 		/* 找出哪種方式需要降低更少 */
         int scaleFactor = 1;
         if ((targetW > 0) || (targetH > 0)) {
             scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+            /*Math.min(X,Y)兩者取最小*/
         }
-
+        /*更多略縮圖資料 : http://www.tuicool.com/articles/FNvmumJ*/
 		/* 設置選項位圖縮放圖像解碼目標 */
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
+        /*inSampleSize，假設原圖是1500x700的，我們給縮略圖留出的空間是100x100的。
+        那麼inSampleSize=min(1500/100, 700/100)=7。我們可以得到的縮略圖是原圖的1/7。
+        這裡如果你要問15:7的圖片怎麼顯示到1:1的區域內，請去看ImageView的scaleType屬性。
+        但是事實沒有那麼完美，雖然設置了inSampleSize=7，但是得到的縮略圖卻是原圖的1/4，
+        原因是inSampleSize只能是2的整數次冪，如果不是的話，向下取得最大的2的整數次冪，
+        7向下尋找2的整數次冪，就是4。*/
         bmOptions.inPurgeable = true;
 
 		/* 解碼JPEG文件轉換成bitmap */
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);//decodeFile(文件路徑, bmOptions)
+        /*解碼文件路徑成點陣圖，假如路徑為空值或者該物件無法被轉為點陣圖，則return null*/
 
-		/* 將點陣圖和ImageView銜接起來 */
         mImageView.setImageBitmap(bitmap);
+        /*將點陣圖資料留傳給mImageView*/
 
         mImageView.setVisibility(View.VISIBLE);
+        /*顯示mImageView*/
 
     }
 
@@ -203,37 +208,25 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
         mImageView.setVisibility(View.VISIBLE);
 
     }
-
     private void handleBigCameraPhoto() {
-
         if (mCurrentPhotoPath != null) {
             setPic();
             galleryAddPic();
             mCurrentPhotoPath = null;
         }
-
     }
-
-
-
     Button.OnClickListener mTakePicOnClickListener = new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
                 }
             };
-
-
     Button.OnClickListener mTakePicSOnClickListener = new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dispatchTakePictureIntent(ACTION_TAKE_PHOTO_S);
                 }
             };
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -248,11 +241,7 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
         InitViewPager();
         //嘗試在一個空對象引用調用虛擬方法無效android.widget.Button.setOnClickListener （ android.view.View $ OnClickListener ）
         Button cameraBtn = (Button)this.view2.findViewById(R.id.button3);
-        setBtnListenerOrDisable(
-                cameraBtn,
-                mTakePicOnClickListener,
-                MediaStore.ACTION_IMAGE_CAPTURE
-        );
+        setBtnListenerOrDisable( cameraBtn, mTakePicSOnClickListener, MediaStore.ACTION_IMAGE_CAPTURE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
         } else {
@@ -263,22 +252,15 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
     public static boolean isIntentAvailable(Context context, String action) {
         final PackageManager packageManager = context.getPackageManager();
         final Intent intent = new Intent(action);
-        List<ResolveInfo> list =
-                packageManager.queryIntentActivities(intent,
-                        PackageManager.MATCH_DEFAULT_ONLY);
+        List<ResolveInfo> list = packageManager.queryIntentActivities(intent,PackageManager.MATCH_DEFAULT_ONLY);
         return list.size() > 0;
     }
 
-    private void setBtnListenerOrDisable(
-            Button btn,
-            Button.OnClickListener onClickListener,
-            String intentName
-    ) {
+    private void setBtnListenerOrDisable( Button btn, Button.OnClickListener onClickListener, String intentName) {
         if (isIntentAvailable(this, intentName)) {
             btn.setOnClickListener(onClickListener);
         } else {
-            btn.setText(
-                    getText(R.string.cannot).toString() + " " + btn.getText());
+            btn.setText( getText(R.string.cannot).toString() + " " + btn.getText());
             btn.setClickable(false);
         }
     }
@@ -309,13 +291,22 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
         views=new ArrayList<View>();
         LayoutInflater inflater=getLayoutInflater();
         view1=inflater.inflate(R.layout.activity_charge, null);
+        /*inflate有填充的意思*/
+        /*把activity_charge的layout布局給view1*/
         view2=inflater.inflate(R.layout.activity_in_camera, null);
-        mImageView = (ImageView)view2.findViewById(R.id.imageView3); // 從 view2 裡找 imageView3
+        /*同view1，同理*/
+        mImageView = (ImageView)view2.findViewById(R.id.imageView3);
+        /*把view2的imageView3給mImageView。
+        activity_in_camera的布局要先給view2，
+        view2才有imageView3*/
         view3=inflater.inflate(R.layout.activity_test, null);
+        /*同view1，同理*/
         views.add(view1);
         views.add(view2);
         views.add(view3);
+        /*把view1、2、3都放進views這個大家庭裡*/
         viewPager.setAdapter(new MyViewPagerAdapter(views));
+        /*再把views這大家庭交給viewPager*/
         viewPager.setCurrentItem(0);
         viewPager.setOnPageChangeListener(new MyOnPageChangeListener());
     }
@@ -466,11 +457,6 @@ public class ViewPagerChargeActivity extends ActionBarActivity {
         mImageView.setImageBitmap(mImageBitmap);
         mImageView.setVisibility(
                 savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ?
-                        ImageView.VISIBLE : ImageView.INVISIBLE
-        );
-        mVideoView.setVideoURI(mVideoUri);
-        mVideoView.setVisibility(
-                savedInstanceState.getBoolean(VIDEOVIEW_VISIBILITY_STORAGE_KEY) ?
                         ImageView.VISIBLE : ImageView.INVISIBLE
         );
     }
